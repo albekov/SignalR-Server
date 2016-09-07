@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Server.IntegrationTesting;
+using Microsoft.AspNetCore.SignalR.Testing.Common;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
-using Xunit;
 
 namespace Microsoft.AspNetCore.SignalR.Tests
 {
@@ -66,22 +64,7 @@ namespace Microsoft.AspNetCore.SignalR.Tests
 
         private static string GetApplicationPath(string projectName)
         {
-            var applicationBasePath = PlatformServices.Default.Application.ApplicationBasePath;
-
-            var directoryInfo = new DirectoryInfo(applicationBasePath);
-            do
-            {
-                var solutionFileInfo = new FileInfo(Path.Combine(directoryInfo.FullName, "SignalR-Server.sln"));
-                if (solutionFileInfo.Exists)
-                {
-                    return Path.GetFullPath(Path.Combine(directoryInfo.FullName, "test", projectName));
-                }
-
-                directoryInfo = directoryInfo.Parent;
-            }
-            while (directoryInfo.Parent != null);
-
-            throw new InvalidOperationException($"Solution root could not be found using {applicationBasePath}");
+            return Path.Combine(Utils.GetSolutionDir(), "test", projectName);
         }
 
         public void Dispose()
